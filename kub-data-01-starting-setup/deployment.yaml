@@ -17,6 +17,7 @@ spec:
           image: mualem/kub-data:2
           env:
             - name: STORY_FOLDER
+              #value: "story"  --- IGNORE ---
               valueFrom:
                 configMapKeyRef:
                   name: data-store-env
