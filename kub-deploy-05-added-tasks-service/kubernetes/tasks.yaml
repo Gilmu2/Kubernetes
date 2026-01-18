@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasks-service
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+    targetPort: 3000
+  selector:
+    app: tasks
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasks-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasks
+  template:
+    metadata:
+      labels:
+        app: tasks
+    spec:
+      containers:
+        - name: tasks-api
+          image: mualem/kub-aws-tasks:latest
+          env:
+            - name: MONGODB_CONNECTION_URI
+              value: 'mongodb+srv://gilmu-db:QD24YsvvTKsXuXk4@users-mongo.rlyb9hi.mongodb.net/?appName=users-mongo'
+            - name: AUTH_API_ADDRESS
+              value: 'auth-service.default.svc.cluster.local:3000'
